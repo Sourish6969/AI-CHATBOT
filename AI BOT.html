@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EquiBot - Social Inequality Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #5e35b1;
+            --secondary: #ff7043;
+        }
+        .typing-indicator::after {
+            content: '...';
+            animation: typing 1.5s infinite;
+        }
+        @keyframes typing {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+        .chat-container {
+            height: calc(100vh - 160px);
+        }
+        @media (max-width: 640px) {
+            .chat-container {
+                height: calc(100vh - 200px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold">EquiBot</h1>
+            </div>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><button class="hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 px-2 py-1 rounded transition" onclick="showInfoModal()">About</button></li>
+                    <li><button class="hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 px-2 py-1 rounded transition" onclick="showResources()">Resources</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 max-w-4xl min-h-[calc(100vh-160px)]">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-4 transition-all duration-300 hover:shadow-2xl">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">Let's Talk About Fairness</h2>
+                <p class="text-gray-600">I can help explain equality issues, share solutions, and point you to helpful resources.</p>
+            </div>
+            
+            <div id="chat-window" class="chat-container overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-gray-50">
+                <div class="flex justify-start">
+                    <div class="max-w-[85%] md:max-w-[70%] bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-2xl rounded-tl-none shadow-sm">
+                        <p>Hello friend! I'm your guide to social justice discussions. Let's explore topics like fair workplaces, equal opportunities, and building inclusive communities together. What would you like to discuss today? I'm happy to share insights and helpful resources.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-gray-200 bg-gray-50">
+                <form id="chat-form" class="flex gap-2 items-center" onsubmit="handleSubmit(event)">
+                    <input 
+                        type="text" 
+                        id="user-input" 
+                        placeholder="Ask about social inequality..." 
+                        class="flex-1 p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-200 transition-all"
+                        aria-label="Type your question about social inequality"
+                        required
+                    >
+                    <button 
+                        type="submit" 
+                        class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-5 py-3 rounded-xl shadow-md transition-all hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 flex items-center justify-center gap-1"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        </svg>
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">About EquiBot</h3>
+                <button onclick="hideInfoModal()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    &times;
+                </button>
+            </div>
+            <div class="p-4 space-y-4">
+                <div class="flex items-center justify-center bg-indigo-50 p-6 rounded-lg">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-gray-900">Equality For All</h3>
+                    </div>
+                </div>
+                <p>EquiBot is designed to provide factual information and actionable advice about social inequality issues worldwide.</p>
+                <h4 class="font-semibold mt-2">Key Features:</h4>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Data-driven insights on inequality</li>
+                    <li>Historical context analysis</li>
+                    <li>Actionable solutions suggestions</li>
+                    <li>Resource directory for help</li>
+                </ul>
+                <h4 class="font-semibold mt-2">Privacy Policy:</h4>
+                <p class="text-sm">We don't store your conversations or personal data. All interactions are private.</p>
+            </div>
+            <div class="p-4 border-t border-gray-200 text-right">
+                <button onclick="hideInfoModal()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Modal -->
+    <div id="resources-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Inequality Resources</h3>
+                <button onclick="hideResources()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    &times;
+                </button>
+            </div>
+            <div class="p-4 space-y-4">
+                <div class="space-y-6">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-700">Education & Awareness</h4>
+                        <ul class="mt-2 space-y-2">
+                            <li><a href="https://www.equalitytrust.org.uk" class="text-blue-600 hover:underline" target="_blank">The Equality Trust</a></li>
+                            <li><a href="https://www.un.org/en/global-issues/inequality" class="text-blue-600 hover:underline" target="_blank">UN Inequality Facts</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-700">Legal Assistance</h4>
+                        <ul class="mt-2 space-y-2">
+                            <li><a href="https://www.naacpldf.org" class="text-blue-600 hover:underline" target="_blank">Legal Defense Fund</a></li>
+                            <li><a href="https://www.aclu.org" class="text-blue-600 hover:underline" target="_blank">ACLU</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-purple-700">Community Support</h4>
+                        <ul class="mt-2 space-y-2">
+                            <li><a href="https://www.feedingamerica.org" class="text-blue-600 hover:underline" target="_blank">Food Assistance</a></li>
+                            <li><a href="https://www.shelter.org" class="text-blue-600 hover:underline" target="_blank">Housing Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-200 text-right">
+                <button onclick="hideResources()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Knowledge base for the chatbot - Social, Climate, and Economic topics
+        const knowledgeBase = {
+            "wage gap": {
+                stats: [
+                    "💵 Women earn $0.84 for every $1 men earn (US Census 2024)",
+                    "⚖️ Racial gap: Black women earn $0.64 vs White men' $1 (Pew Research)",
+                    "🌍 Global gap average: 16% less for women (ILO 2024 Report)"
+                ],
+                problems: [
+                    "🔍 Systemic bias in hiring and promotions",
+                    "📉 Cultural stereotypes affecting career progression",
+                    "🏢 Lack of workplace policies supporting gender equity"
+                ],
+                drawbacks: [
+                    "📊 Economic inefficiency from untapped potential",
+                    "👪 Disproportionate impact on female-headed households",
+                    "🏛️ Policy challenges in achieving true pay equality"
+                ],
+                info: "<div class='space-y-4'>" +
+                "<h4 class='font-semibold text-purple-700'>Understanding Wage Gaps</h4>" +
+                "<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/24673f22-0508-490a-9980-69588bf7e66a.png' alt='Latest wage gap data visualization' class='my-3 rounded'>" +
+                "<p>Gender wage gaps continue globally, with variations by:</p>" +
+                "<ul class='list-disc pl-5 space-y-1'>" +
+                "<li>Industry</li><li>Education level</li><li>Race/Ethnicity</li>" +
+                "</ul></div>",
+                tips: [
+                    "📌 Negotiation training programs",
+                    "📌 Support salary transparency laws",
+                    "📌 Advocate for pay equity audits"
+                ]
+            },
+            "systemic racism": {
+                stats: [
+                    "📊 Black workers unemployment rate is 2x higher than white counterparts (BLS 2023)",
+                    "🏠 74% of segregated neighborhoods trace to historic redlining (Brookings)",
+                    "⚖️ Black defendants receive 20% longer sentences for same crimes (USSC)"
+                ],
+                problems: [
+                    "🔍 Institutional policies reinforcing racial hierarchy",
+                    "🏛️ Historical discrimination effects persisting today",
+                    "🚫 Lack of accountability for implicit biases"
+                ],
+                drawbacks: [
+                    "💔 Generational wealth gaps widen over time", 
+                    "🏫 Educational disparities perpetuate cycles",
+                    "⚕️ Health inequities lead to lower life expectancy",
+                    "⚖️ Criminal justice system disparities"
+                ],
+                info: "Systemic racism refers to institutional policies and practices that create and maintain racial inequality in areas like housing, education, employment, and criminal justice.",
+                examples: [
+                    "🏠 Redlining in housing",
+                    "🏫 School funding disparities", 
+                    "💼 Hiring discrimination",
+                    "⚖️ Sentencing disparities"
+                ],
+                tips: [
+                    "🎓 Educate yourself about implicit biases (Project Implicit tests)",
+                    "🛒 Support minority-owned businesses", 
+                    "📢 Contact reps about policy reform",
+                    "🤝 Join/donate to anti-racism organizations"
+                ]
+            },
+            "income inequality": {
+                stats: [
+                    "💰 Top 1% owns 45% of global wealth (Credit Suisse)",
+                    "📉 Poorest 50% own just 2% of wealth", 
+                    "📈 Pandemic wealth growth: +$5 trillion for billionaires"
+                ],
+                problems: [
+                    "🏦 Tax policies favoring capital over labor",
+                    "💼 Decline of unions and worker protections",
+                    "🌍 Globalization increasing wage competition",
+                    "👨‍👩‍👧‍👦 Inheritance reinforcing privilege cycles"
+                ],
+                drawbacks: [
+                    "🏚️ Reduced social mobility and opportunity",
+                    "💸 Vulnerability to economic shocks for poor",
+                    "🏥 Health disparities linked to income",
+                    "🏙️ Urban segregation by class",
+                    "📉 Political influence disparities"
+                ],
+                info: "Income inequality refers to unequal distribution of wealth and income in society:",
+                examples: [
+                    "🏡 Housing affordability crises",
+                    "🏫 Educational quality disparities",
+                    "🍎 Nutrition and health inequalities",
+                    "💼 Occupational segregation"
+                ],
+                tips: [
+                    "📜 Advocate for progressive taxation",
+                    "🤲 Support living wage initiatives",
+                    "🏗️ Invest in affordable housing",
+                    "🎓 Fund equitable education access",
+                    "💪 Strengthen labor unions"
+                ]
+            },
+            "housing discrimination": {
+                stats: [
+                    "🏠 65% of Black renters face discrimination (HUD 2023)",
+                    "♿ 60% of housing lacks full accessibility features",
+                    "🏙️ Segregated neighborhoods reduce generational wealth by 50%"
+                ],
+                problems: [
+                    "🔍 Implicit bias in rental/mortgage approvals",
+                    "🚫 Exclusionary zoning practices",
+                    "💰 Gentrification pricing out communities",
+                    "📜 Weak enforcement of fair housing laws"
+                ],
+                drawbacks: [
+                    "🏚️ Concentrated poverty areas",
+                    "👨‍👩‍👧‍👦 Segregated schools and services",
+                    "💸 Higher transportation costs",
+                    "🏥 Health impacts from poor housing"
+                ],
+                info: "Housing discrimination manifests through:",
+                examples: [
+                    "🛑 Steering certain races away from neighborhoods",
+                    "💵 Higher mortgage denial rates",
+                    "🏘️ Exclusionary zoning laws",
+                    "🛠️ Lack of accessibility features"
+                ],
+                tips: [
+                    "📝 Document and report discrimination",
+                    "🏘️ Advocate for inclusive zoning",
+                    "🏡 Support affordable housing developments",
+                    "💼 Push for stronger enforcement",
+                    "🏛️ Fund housing voucher programs"
+                ]
+            },
+            "education inequality": {
+                info: "Children from low-income families are 7 times more likely to drop out of school than high-income peers. School districts serving mostly students of color receive $23 billion less in funding annually than majority-white districts (EdBuild).",
+                tips: [
+                    "Volunteer as a tutor in underserved schools",
+                    "Donate school supplies to Title I schools",
+                    "Support policies that equalize school funding",
+                    "Advocate for culturally responsive curriculum in schools"
+                ]
+            },
+            "climate change food security": {
+                stats: [
+                    "🌾 1.3 billion tons food wasted annually = 8% global emissions (FAO 2023)",
+                    "📉 Yields of major crops (wheat, rice, corn) could decline 10-25% by 2050 (IPCC)",
+                    "🌡️ Each 1°C rise reduces wheat yields by 6%, rice by 3.2%, corn by 7.4%",
+                    "🌍 3.2 billion people already face food insecurity (UN 2023 report)"
+                ],
+                info: "Climate change impacts on food security (2024 data):\n" +
+                "<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b4994ba7-36dc-48d3-b44a-ac7fa2506e72.png' alt='Food security impact data' class='my-3 rounded'>" +
+                "<div class='mt-3 p-3 bg-yellow-50 rounded-lg'>" +
+                "Projected impacts by region:<br>" +
+                "• Africa: 30% cereal yield reduction by 2030<br>" +
+                "• Asia: 10-15% rice yield loss by 2050<br>" +
+                "• Latin America: 70% arable land degradation risk" +
+                "</div>",
+                tips: [
+                    "🌱 Advocate for climate-smart agriculture policies",
+                    "♻️ Reduce personal food waste (40% of US food wasted)",
+                    "🌾 Support local farmers using resilient crop varieties"
+                ]
+            },
+            "renewable energy developing nations": {
+                stats: ["🌍 759M people lack electricity access","📈 Renewable costs dropped 85% since 2010"],
+                info: "Renewables offer clean, affordable energy solutions\n<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/44ac2a6d-d74e-405f-b00b-a2ae1cf4de30.png' alt='Renewable energy potential' class='my-3 rounded'>",
+                tips: ["Invest in solar microgrids","Support energy education","Advocate for funding"]
+            },
+            "youth climate movements": {
+                stats: ["🔄 1.6M participants in 2023 global strikes","📢 70% of youth cite climate as top concern"],
+                info: "Youth are driving climate action globally\n<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fcaf1be6-4021-49e9-a490-5736efa03b38.png' alt='Youth activists photo' class='my-3 rounded'>",
+                tips: ["Join local organizations","Participate in strikes","Engage policymakers"]
+            },
+            "greenhouse gas effects": {
+                stats: ["🌡️ CO2 levels highest in 2M years","📊 Energy sector = 73% of emissions"],
+                info: "Long-term effects include rising temps and sea levels\n<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/169c89d6-47ed-4d02-b86b-26eb3deaf2c1.png' alt='Emissions data visualization' class='my-3 rounded'>",
+                tips: ["Reduce carbon footprint","Support clean energy","Advocate for policy changes"]
+            },            
+            "racial healthcare disparities": {
+                stats: [
+                    "🏥 Black maternal mortality: 69.9 deaths/100k vs 26.6 white (CDC 2023)",
+                    "💊 Black patients 40% less likely to receive pain medication (JAMA study)",
+                    "🩺 Life expectancy gap: Black Americans live 4yrs less than whites", 
+                    "🏛️ 75% minority neighborhoods classified as medical deserts"
+                ],
+                info: "Healthcare disparities by race (2023-24 data):\n" +
+                "<div class='grid grid-cols-1 md:grid-cols-2 gap-4 my-3'>" +
+                "<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/06c2e54a-cf57-4061-92f3-dd4762ebbefc.png' alt='Healthcare inequality data' class='rounded'>" +
+                "<div class='bg-red-50 p-3 rounded-lg'>" +
+                "<h4 class='font-bold mb-2'>Key Findings:</h4>" +
+                "<p>• Black Americans experience worse health outcomes for 14/16 major health indicators</p>" +
+                "<p>• Racial bias in AI health algorithms leads to 35% less care for Black patients</p>" +
+                "</div>" +
+                "</div>",
+                tips: [
+                    "📢 Support the Maternal CARE Act to reduce racial disparities",
+                    "🩺 Advocate for medical school diversity initiatives",
+                    "📊 Push for health data transparency by race/ethnicity"
+                ]
+            },
+            "police reform": {
+                stats: ["🚔 Black people 3x more likely to be killed by police","⚖️ Only 1% of police killings result in charges"],
+                info: "2025 sees continued calls for accountability\n<img src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1f9ab43e-891d-417f-beed-397ca0eedd74.png' alt='Police violence statistics' class='my-3 rounded'>",
+                tips: ["Support oversight boards","Push for de-escalation training","Vote for reform candidates"]
+            }
+        };
+
+        // Chat functionality
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `max-w-xs sm:max-w-md md:max-w-lg p-3 rounded-lg ${isUser ? 'bg-purple-100 rounded-tr-none' : 'bg-gray-100 rounded-tl-none'}`;
+            
+            // Handle typing indicator removal
+            if (!isUser && message === 'typing') {
+                contentDiv.className += ' typing-indicator w-10 h-6';
+                contentDiv.innerHTML = '&nbsp;';
+            } else {
+                contentDiv.innerHTML = message;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function simulateTyping() {
+            addMessage('typing');
+            return setTimeout(() => {
+                const typingIndicator = chatWindow.lastChild;
+                if (typingIndicator && typingIndicator.querySelector('.typing-indicator')) {
+                    chatWindow.removeChild(typingIndicator);
+                }
+            }, 1500);
+        }
+
+        function getBotResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            let response = { info: "", tips: [] };
+            
+            // Enhanced topic detection with multiple phrasings
+            const topicMap = {
+                "wage|pay gap|gender pay": "wage gap",
+                "systemic racism|institutional racism|structural racism": "systemic racism",
+                "income inequality|wealth gap|rich poor gap": "income inequality",
+                "food security|climate food|hunger climate": "climate change food security",
+                "police reform|police brutality|police accountability": "police reform",
+                "healthcare disparities|medical racism|health inequality": "racial healthcare disparities"
+            };
+
+            for (const [phrases, topic] of Object.entries(topicMap)) {
+                if (new RegExp(phrases).test(lowerMessage)) {
+                    response = knowledgeBase[topic];
+                    
+                    // Enhanced context-based response variations
+                    if (/(data|statistic)/i.test(lowerMessage)) {
+                        response.info = `Detailed statistics about ${topic}:\n${response.stats.join('\n')}`;
+                    }
+                    else if (/(problem|cause|why)/i.test(lowerMessage)) {
+                        response.info = `Problems/Causes of ${topic}:\n${response.problems.join('\n')}`;
+                    }
+                    else if (/(drawback|negative)/i.test(lowerMessage)) {
+                        response.info = `Negative aspects of ${topic}:\n${response.drawbacks.join('\n')}`;
+                    }
+                    else if (/(solution|solve|address)/i.test(lowerMessage)) {
+                        response.info = `Solutions for ${topic}:\n${response.tips.join('\n')}`;
+                    }
+                    break;
+                }
+            }
+            
+            // Enhanced default response based on query type
+            if (!response.info) {
+                if (lowerMessage.includes('how') || lowerMessage.includes('solution')) {
+                    response.info = "I can provide solutions and approaches for:\n\n" +
+                    "• Climate change mitigation strategies\n" +
+                    "• Addressing systemic inequalities\n" +
+                    "• Economic reform proposals\n\n" +
+                    "Try: 'How to reduce wage gap?' or 'Solutions for police reform'";
+                } 
+                else if (lowerMessage.includes('statistics') || lowerMessage.includes('data')) {
+                    response.info = "I have current statistics on these areas:\n\n" +
+                    "🌡️ Climate impacts\n" +
+                    "⚖️ Social justice metrics\n" +
+                    "💰 Economic indicators\n\n" +
+                    "Try: 'Statistics on gender pay' or 'Latest climate data'";
+                }
+                else {
+                    response.info = "I can help analyze these aspects:\n\n" +
+                    "📊 Data trends\n" +
+                    "🔍 Root causes\n" +
+                    "💡 Potential solutions\n" +
+                    "🌐 Global perspectives\n\n" +
+                    "Ask me to explain any of these topics in detail";
+                }
+            }
+            
+            // Enhanced response formatting with context awareness
+            let formattedResponse = `<div class="space-y-4">`;
+            
+            if (response.stats && response.stats.length > 0) {
+                const showStats = !lowerMessage.includes('solution') && !lowerMessage.includes('solve');
+                if (showStats) {
+                    formattedResponse += `
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <h4 class="font-bold text-blue-800 mb-3 text-lg">📊 ${lowerMessage.includes('statistics') ? 
+                            'Detailed Statistics' : 'Key Data Insights'}:</h4>
+                        <div class="grid gap-2">
+                            ${response.stats.map(stat => `
+                            <div class="flex items-start">
+                                <span class="bg-blue-100 text-blue-800 p-1 rounded mr-2">${stat.includes('%') ? '📈' : '⇨'}</span>
+                                <span class="flex-1">${stat}</span>
+                            </div>`).join('')}
+                        </div>
+                    </div>`;
+                }
+            }
+            
+            // Context-aware main response
+            formattedResponse += lowerMessage.includes('explain') || lowerMessage.includes('what is') ?
+                `<div class="prose"><p class="font-medium text-gray-800">${response.info.replace('\n','</p><p>')}</p></div>` :
+                `<div class="border-l-4 border-purple-500 pl-4 py-2">${response.info}</div>`;
+            
+            if (response.tips && response.tips.length > 0) {
+                formattedResponse += `<div class="mt-3 pt-3 border-t border-gray-200">
+                    <h4 class="font-semibold text-indigo-700 mb-2">Actionable Steps:</h4>
+                    <ul class="list-disc pl-5 space-y-1">${response.tips.map(tip => 
+                        `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+            
+            formattedResponse += `</div>`;
+            
+            return formattedResponse;
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const message = userInput.value.trim();
+            
+            if (message) {
+                // Add user message
+                addMessage(message, true);
+                userInput.value = '';
+                
+                // Simulate typing and then add bot response
+                const typingTimeout = simulateTyping();
+                
+                setTimeout(() => {
+                    clearTimeout(typingTimeout);
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse);
+                }, 1800);
+            }
+        }
+
+        // Modal functions
+        function showInfoModal() {
+            document.getElementById('info-modal').classList.remove('hidden');
+        }
+
+        function hideInfoModal() {
+            document.getElementById('info-modal').classList.add('hidden');
+        }
+
+        function showResources() {
+            document.getElementById('resources-modal').classList.remove('hidden');
+        }
+
+        function hideResources() {
+            document.getElementById('resources-modal').classList.add('hidden');
+        }
+
+        // Accessibility features
+        document.addEventListener('keydown', function(event) {
+            // Escape key closes modals
+            if (event.key === 'Escape') {
+                hideInfoModal();
+                hideResources();
+            }
+        });
+    </script>
+</body>
+</html>
